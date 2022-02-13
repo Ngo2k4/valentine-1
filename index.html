@@ -66,7 +66,7 @@
       controls
       loop
     ></audio>
-    <div id="app">
+    <div id="app" style="opacity: 0">
       <p
         v-for="(msg, idx) in msgList"
         class="typing"
@@ -146,6 +146,10 @@
           showLength: 0,
 
           textHasEnd: false,
+          endHasPlay: false,
+        },
+        created: function () {
+          document.getElementById("app").style.opacity = 1;
         },
         mounted: async function () {
           const speed = 233;
@@ -191,6 +195,7 @@
           });
           this.textHasEnd = true;
           document.title = "情人节快乐！";
+          this.handleTouch();
         },
         methods: {
           bigAndScroll() {
@@ -205,6 +210,13 @@
             const maxVolume = 0.3;
             if (this.textHasEnd) {
               bgm.volume = maxVolume;
+              if (!this.endHasPlay) {
+                this.endHasPlay = true;
+                bgm.currentTime = 0;
+              }
+              bgm.play();
+            } else {
+              bgm.volume = 0;
               bgm.play();
             }
           },
