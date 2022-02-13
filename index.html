@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>致小船船</title>
+    <style>
+      .typing {
+        /* width: 15em; */
+        white-space: nowrap;
+        border-right: 2px solid transparent;
+        overflow: hidden;
+        animation: typing 3.5s steps(15, end);
+      }
+      .blink {
+        animation: blink-caret 0.75s step-end infinite;
+      }
+      /* 打印效果 */
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+      /* 光标闪啊闪 */
+      @keyframes blink-caret {
+        from,
+        to {
+          box-shadow: 1px 0 0 0 transparent;
+        }
+        50% {
+          box-shadow: 1px 0 0 0;
+        }
+      }
+      body {
+        padding: 20px;
+        background-color: #000;
+        color: #fff;
+        font-family: PingFangSC-Regular, sans-serif;
+      }
+      html,
+      body {
+        scroll-behavior: smooth;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="fireworks"
+      style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1"
+    ></div>
+    <audio
+      style="
+        position: fixed;
+        top: -200px;
+        left: -200px;
+        width: 50px;
+        height: 50px;
+      "
+      src="./music.m4a"
+      id="music"
+      controls
+      loop
+    ></audio>
+    <div id="app">
+      <p
+        v-for="(msg, idx) in msgList"
+        class="typing"
+        v-if="idx <= showLength"
+        :key="msg"
+        style="margin: 0.5em 0"
+      >
+        {{msg}}
+      </p>
+      <br />
+      <p
+        v-for="(msg, idx) in poemList"
+        class="typing"
+        v-if="(idx + msgList.length) <= showLength"
+        :key="msg"
+        style="font-style: italic; color: rgba(255, 255, 255, 0.8)"
+      >
+        {{msg}}
+      </p>
+      <br />
+      <p
+        v-for="(msg, idx) in endList"
+        class="typing"
+        v-if="(idx + msgList.length + poemList.length) <= showLength"
+        :key="msg"
+      >
+        {{msg}}
+      </p>
+      <br />
+      <div style="width: 104px; float: right; margin-bottom: 40px">
+        <p
+          class="typing"
+          v-if="showLength >= msgList.length + poemList.length + endList.length"
+        >
+          —— 你的阿谢
+        </p>
+      </div>
+    </div>
+    <script src="./vue.js"></script>
+    <script src="./jquery.3.11.min.js"></script>
+    <script src="./jquery.fireworks.js"></script>
+    <script>
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      var bgm = document.getElementById("music");
+
+      var app = new Vue({
+        el: "#app",
+        data: {
+          msgList: [
+            "小船船，你知道吗？",
+            "我们已经 36 天没见面了～",
+            "这 36 天里，每天都在想你～",
+            "不",
+            "是每个小时，我都在想你～",
+            "言语的单薄无法表达思念的厚重",
+            "即使天各一方",
+            "但想着每个与你在一起的瞬间都是珍贵的",
+            "恰好今天是情人节",
+            "想着送你点什么作礼物",
+            "但没想出来",
+            "那就把我对你的思念记录成诗",
+            "送予你",
+          ],
+          poemList: [
+            "夜寒拾杏朝晖上，",
+            "寂寞随风荡。",
+            "拾来归去路已空，",
+            "昂首望月，",
+            "似你在其中。",
+            "归来杏叶粘成卉，",
+            "盼把佳人会。",
+            "而今杭城春渐浓，",
+            "一枕梦故，",
+            "何日再相逢。",
+          ],
+          endList: ["宝贝，情人节快乐"],
+          showLength: 0,
+
+          textHasEnd: false,
+        },
+        mounted: async function () {
+          const speed = 233;
+          const stepPause = 500;
+          this.textHasEnd = false;
+
+          document.addEventListener("touchstart", this.handleTouch);
+          document.addEventListener("click", this.handleTouch);
+
+          for (let i = 0; i < this.msgList.length; i++) {
+            const msg = this.msgList[i];
+            await sleep(msg.length * speed + stepPause);
+            this.showLength++;
+            this.bigAndScroll();
+          }
+          this.showLength = this.msgList.length - 1;
+          for (let i = 0; i < this.poemList.length; i++) {
+            const msg = this.poemList[i];
+            console.log(msg, this.showLength);
+            await sleep(msg.length * speed + stepPause);
+            this.showLength++;
+            this.bigAndScroll();
+          }
+          for (let i = 0; i < this.endList.length; i++) {
+            const msg = this.endList[i];
+            console.log(msg, this.showLength);
+            await sleep(msg.length * speed + stepPause);
+            this.showLength++;
+            this.bigAndScroll();
+          }
+          this.bigAndScroll();
+          await sleep(3500);
+          this.showLength++;
+          this.bigAndScroll();
+          await sleep(500);
+          this.bigAndScroll();
+          await sleep(30 00);
+          $("#fireworks").fireworks({
+            sound: false,
+            opacity: 0.5,
+            width: "100%",
+            height: "100%",
+          });
+          this.textHasEnd = true;
+          document.title = "情人节快乐！";
+        },
+        methods: {
+          bigAndScroll() {
+            if (this.showLength > 10) {
+              $(document).scrollTop(
+                document.documentElement.scrollHeight -
+                  document.documentElement.clientHeight
+              );
+            }
+          },
+          handleTouch() {
+            const maxVolume = 0.3;
+            if (this.textHasEnd) {
+              bgm.volume = maxVolume;
+              bgm.play();
+            }
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
